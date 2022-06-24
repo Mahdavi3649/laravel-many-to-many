@@ -11,7 +11,23 @@ s (12 sloc)  337 Bytes
     <div class="post-data px-4">
         <h1>{{$post->title}}</h1>
         <div class="metadata">
-            Category: {{$post->category ? $post->category->name: 'uncategorized'}}
+            <div class="category">
+                <strong>Category</strong>: {{$post->category ? $post->category->name: 'uncategorized'}}
+            </div>
+
+            <div class="tags">
+                <strong>Tags:</strong>
+                @if (count($post->tags) > 0 )
+                
+                    @foreach($post->tags as $tag)
+                    <span>#{{$tag->name}}</span>
+ 
+                    @endforeach
+
+                @else
+                  <span>N/A</span>
+                @endif
+            </div>
         </div>
         <div class="content">
             {{$post->content}}

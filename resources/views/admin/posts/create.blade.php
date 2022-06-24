@@ -31,6 +31,23 @@
       </select>
     </div>
 
+    <div class="mb-3">
+      <label for="tags" class="form-label">Tags</label>
+      <select multiple class="form-select" name="tags[]" id="tags" aria-label="tags">
+        <option value="">Select a tag</option>
+
+        @forelse($tags as $tag)
+        <option value="{{$tag->id}}">{{$tag->name}}</option>
+        
+
+        @empty
+
+        <option value="">No tags</option>
+        @endforelse
+        
+      </select>
+    </div>
+
     <div class="mb-4">
         <label for="content">Content</label>
         <textarea class="form-control  @error('content') is-invalid @enderror" name="content" id="content" rows="4">
