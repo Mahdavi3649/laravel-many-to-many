@@ -31,10 +31,31 @@
       <select class="form-control @error('category_id') is-invalid @enderror" name="category_id" id="category_id">
         <option>Select a category</option>
         @foreach($categories as $category)
-
         <option value="{{$category->id}}" {{$category->id == old('category->id', $post->category->id) ? 'selected' : ''}}>{{$category->name}}</option>
-
         @endforeach
+        
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="tags" class="form-label">Tags</label>
+      <select multiple class="form-select" name="tags[]" id="tags" aria-label="tags">
+        <option value="">Select tags</option>
+        @forelse ($tags as $tag)
+
+            @if($errors->any())
+            <option value="{{$tag->id }}"
+                {{in_array($tag->id , old('tags', []))  ? 'selected'  : '' }}> {{$tag->name}}  
+            </option>
+                @else
+            <option value="{{$tag->id }}"
+                {{$post->tags->contains($tag->id) ? 'selected'  : ''}}> {{$tag->name}}
+            </option>
+                @endif
+        @empty
+        <option value="">no tags</option>
+
+        @endforelse
         
       </select>
     </div>
