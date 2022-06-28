@@ -8,6 +8,7 @@ use App\Models\Tag;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
 use Illuminate\Support\Facades\Storage;
+use App\Mail\NewPostCreated;
 class PostController extends Controller
 {
     /**
@@ -80,8 +81,16 @@ class PostController extends Controller
         $new_post = Post::create($validate_data);
         $new_post->tags()->attach($request->tags);
 
+        //return (new NewPostCreated($new_post))->render();
+
         // redirect to get route
         return redirect()->route('admin.posts.index')->with('message','Post Created Successfully');
+
+        //invia la mail usando istanza dell utente nella request
+        Mail::to($request->user())->send(new NewPostCreated($new_post));
+
+         //invia la mail usando una mail
+         //Mail::to('test@example.com')->send(new NewPostCreated($new_post));
     }
 
     /**
