@@ -30,7 +30,7 @@
                         <td>{{$post->title}}</td>
                         <td>{{$post->slug}}</td>
                         <td>
-                            <img width="130" src="{{$post->cover_image}}" alt="">
+                            <img width="130" src="{{asset('storage/'. $post->cover_image)}}" alt="">
                         </td>
                         <td>
                         <a class="btn btn-primary text-white btn-sm" href="{{route('admin.posts.show', $post->slug)}}">

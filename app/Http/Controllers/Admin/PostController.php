@@ -7,7 +7,7 @@ use App\Models\Category;
 use App\Models\Tag;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
-
+use Illuminate\Support\Facades\Storage;
 class PostController extends Controller
 {
     /**
@@ -43,7 +43,7 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-        //dd($request->all());
+        //ddd($request->all());
         //validate data
         $validate_data = $request->validated();
     
@@ -54,6 +54,28 @@ class PostController extends Controller
         //dd($validate_data);
         //$validate_data['category_id'] = $request->category_id;
         
+
+        //verificare se la richiesta contiene un file 
+        
+        //ddd(array_key_exists('cover_image', $request->all())); // opzione 1
+        //opzione 2
+        if($request->hasFile('cover_image')) {
+
+            // valida il file 
+            $request->validate([
+                'cover_image' => 'nullable|image|max:250' 
+            ]);
+            // la salvo nel filesystem
+            //ddd($request->all());
+            //recrupero il percorso 
+            $path = Storage::put('post_images', $request->cover_image);
+            //ddd($path);
+            //pass il percorso all'array di dati validati per il salvataggio  della risorsa
+            $validate_data['cover_image'] = $path;
+        }
+
+        //ddd($validate_data);
+
         //create the resource
         $new_post = Post::create($validate_data);
         $new_post->tags()->attach($request->tags);
@@ -95,7 +117,7 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, Post $post)
     {
-        //dd($request->all());
+        //ddd($request->all());
 
         // validate data
         $validate_data = $request->validated();
@@ -104,6 +126,26 @@ class PostController extends Controller
         $slug = Post::generateSlug($request->title);
         //dd($slug);
         $validate_data['slug'] = $slug;
+
+        if($request->hasFile('cover_image')) {
+
+            // valida il file 
+            $request->validate([
+                'cover_image' => 'nullable|image|max:250' 
+            ]);
+
+            Storage::delete($post->cover_image);
+            
+            // la salvo nel filesystem
+            //ddd($request->all());
+            //recrupero il percorso 
+            $path = Storage::put('post_images', $request->cover_image);
+            //ddd($path);
+            //pass il percorso all'array di dati validati per il salvataggio  della risorsa
+            $validate_data['cover_image'] = $path;
+        }
+
+
         // update the resource
         $post->update($validate_data);
 
@@ -121,6 +163,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        Storage::delete($post->cover_image);
         $post->delete();
         return redirect()->route('admin.posts.index')->with('message', "$post->title deleted successfully");
     }

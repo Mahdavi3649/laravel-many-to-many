@@ -7,7 +7,7 @@ s (12 sloc)  337 Bytes
 <div class="container">
     <div class="posts row d-flex py-4">
         <div class="col-6">
-            <img class="img-fluid" src="{{$post->cover_image}}" alt="{{$post->title}}">
+            <img class="img-fluid" src="{{asset('storage/'. $post->cover_image)}}" alt="{{$post->title}}">
         </div>
     
         <div class="col-6 post-data px-4">
